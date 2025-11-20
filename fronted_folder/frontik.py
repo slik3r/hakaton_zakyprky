@@ -2,7 +2,8 @@ import sys
 import os
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel,
-    QComboBox, QLineEdit, QPushButton, QMessageBox, QSpacerItem, QSizePolicy
+    QComboBox, QLineEdit, QPushButton, QMessageBox, 
+    QSpacerItem, QSizePolicy, QCheckBox
 )
 
 class SearchApp(QWidget):
@@ -10,7 +11,7 @@ class SearchApp(QWidget):
         super().__init__()
         self.setWindowTitle("КонтрЗакупки · Поиск")
         self.setMinimumWidth(400)
-        self.setMinimumHeight(500)
+        self.setMinimumHeight(550)  # Увеличили высоту для новых элементов
 
         # Загрузка стилей
         self.load_styles()
@@ -32,6 +33,17 @@ class SearchApp(QWidget):
         self.keywords_edit.setPlaceholderText("Например: мужские джинсы")
         layout.addWidget(self.keywords_edit)
 
+        # Добавляем чекбоксы
+        self.only_actual_checkbox = QCheckBox("Только актуальные закупки")
+        self.only_actual_checkbox.setChecked(True)
+        layout.addWidget(self.only_actual_checkbox)
+
+        self.with_electronic_signature_checkbox = QCheckBox("Только с электронной подписью")
+        layout.addWidget(self.with_electronic_signature_checkbox)
+
+        self.include_archive_checkbox = QCheckBox("Включая архивные")
+        layout.addWidget(self.include_archive_checkbox)
+
         self.search_button = QPushButton("🔍 Найти закупки")
         self.search_button.clicked.connect(self.handle_search)
         layout.addWidget(self.search_button)
@@ -44,25 +56,27 @@ class SearchApp(QWidget):
         # Определяем путь к файлу стилей
         current_dir = os.path.dirname(os.path.abspath(__file__))
         css_path = os.path.join(current_dir, "styles.css")
-        
-        # Проверяем существование файла
-        if not os.path.exists(css_path):
-            print(f"Файл стилей не найден: {css_path}")
-            self.set_fallback_style()
-            return
-            
         # Читаем файл стилей
         with open(css_path, "r", encoding="utf-8") as file:
             stylesheet = file.read()
             self.setStyleSheet(stylesheet)
             print("Стили успешно загружены из файла")
-                
+
 
     def handle_search(self):
         region = self.region_combo.currentText()
         keywords = self.keywords_edit.text()
-        QMessageBox.information(self, "Результаты поиска", 
-                               f"Регион: {region}\nКлючевые слова: {keywords}")
+        only_actual = self.only_actual_checkbox.isChecked()
+        with_electronic_signature = self.with_electronic_signature_checkbox.isChecked()
+        include_archive = self.include_archive_checkbox.isChecked()
+        
+        message = (f"Регион: {region}\n"
+                  f"Ключевые слова: {keywords}\n"
+                  f"Только актуальные: {'Да' if only_actual else 'Нет'}\n"
+                  f"С электронной подписью: {'Да' if with_electronic_signature else 'Нет'}\n"
+                  f"Включая архивные: {'Да' if include_archive else 'Нет'}")
+        
+        QMessageBox.information(self, "Результаты поиска", message)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

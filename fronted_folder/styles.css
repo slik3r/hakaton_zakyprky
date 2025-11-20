@@ -85,6 +85,42 @@ QPushButton:pressed {
     background-color: #21618c;
 }
 
+/* Стили для QCheckBox */
+QCheckBox {
+    spacing: 8px;
+    font-size: 14px;
+    color: #2c3e50;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #bdc3c7;
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #3498db;
+    border: 2px solid #3498db;
+}
+
+QCheckBox::indicator:checked:hover {
+    background-color: #2980b9;
+    border: 2px solid #2980b9;
+}
+
+QCheckBox::indicator:unchecked:hover {
+    border: 2px solid #3498db;
+}
+
+QCheckBox::indicator:checked:pressed {
+    background-color: #21618c;
+    border: 2px solid #21618c;
+}
+
 /* Стиль для QMessageBox */
 QMessageBox {
     background-color: white;
