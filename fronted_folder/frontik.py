@@ -1,52 +1,19 @@
 import sys
+import os
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel,
     QComboBox, QLineEdit, QPushButton, QMessageBox, QSpacerItem, QSizePolicy
 )
-from PyQt6.QtGui import QFont
 
 class SearchApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("КонтрЗакупки · Поиск")
         self.setMinimumWidth(400)
+        self.setMinimumHeight(500)
 
-        # Глобальный стиль для современного вида
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f4f6fb;
-                font-family: 'Segoe UI', 'Arial', sans-serif;
-                font-size: 15px;
-                color: #202945;
-            }
-            QLabel {
-                font-weight: 600;
-                font-size: 16px;
-                margin-top: 16px;
-                margin-bottom: 4px;
-            }
-            QComboBox, QLineEdit {
-                border: 1px solid #d2d7e1;
-                border-radius: 8px;
-                padding: 8px 12px;
-                font-size: 15px;
-                background: #fff;
-                margin-bottom: 8px;
-            }
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #0057b7, stop:1 #228be6);
-                color: #fff;
-                border: none;
-                border-radius: 8px;
-                font-size: 15px;
-                padding: 10px 0;
-                margin-top: 8px;
-                font-weight: 700;
-            }
-            QPushButton:hover {
-                background: #006add;
-            }
-        """)
+        # Загрузка стилей
+        self.load_styles()
 
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 30, 30, 30)
@@ -72,10 +39,30 @@ class SearchApp(QWidget):
         layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
         self.setLayout(layout)
 
+    def load_styles(self):
+        """Загрузка CSS стилей из файла"""
+        # Определяем путь к файлу стилей
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        css_path = os.path.join(current_dir, "styles.css")
+        
+        # Проверяем существование файла
+        if not os.path.exists(css_path):
+            print(f"Файл стилей не найден: {css_path}")
+            self.set_fallback_style()
+            return
+            
+        # Читаем файл стилей
+        with open(css_path, "r", encoding="utf-8") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
+            print("Стили успешно загружены из файла")
+                
+
     def handle_search(self):
         region = self.region_combo.currentText()
         keywords = self.keywords_edit.text()
-        QMessageBox.information(self, "Результаты поиска", f"Регион: {region}\nКлючевые слова: {keywords}")
+        QMessageBox.information(self, "Результаты поиска", 
+                               f"Регион: {region}\nКлючевые слова: {keywords}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
